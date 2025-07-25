@@ -1,30 +1,216 @@
 import { useState } from 'react';
+import { Mail, Lock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Add login logic
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+      setSuccess(true);
+      // Optionally store token/user info here
+      setTimeout(() => navigate('/home'), 1000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+    <div style={styles.bg}>
+      <div style={styles.animatedBg} />
+      <div style={styles.card} className="login-card-animate">
+        <h2 style={styles.title}>Welcome Back</h2>
+        <p style={styles.subtitle}>Login to UV's Store</p>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <Mail size={20} style={styles.icon} />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              style={styles.input}
+              disabled={loading}
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <Lock size={20} style={styles.icon} />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              style={styles.input}
+              disabled={loading}
+            />
+          </div>
+          <button type="submit" style={styles.button} className="login-btn-animate" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+        {error && <div style={{ color: '#ff6b6b', marginTop: 16, fontWeight: 600 }}>{error}</div>}
+        {success && <div style={{ color: '#10b981', marginTop: 16, fontWeight: 600 }}>Login successful! Redirecting...</div>}
+        <div style={{ marginTop: 24, textAlign: 'center' }}>
+          <span style={{ color: '#fff', fontWeight: 500, fontSize: '1rem' }}>Don't have an account?</span>
+          <button
+            onClick={() => navigate('/register')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#a78bfa',
+              fontWeight: 700,
+              fontSize: '1rem',
+              marginLeft: 8,
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              transition: 'color 0.2s',
+            }}
+            onMouseOver={e => (e.target.style.color = '#f472b6')}
+            onMouseOut={e => (e.target.style.color = '#a78bfa')}
+            disabled={loading}
+          >
+            Register
+          </button>
         </div>
-        <div>
-          <label>Password:</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-        </div>
-        <button type="submit">Login</button>
-      </form>
+      </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+        .login-card-animate {
+          animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .login-btn-animate {
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-btn-animate:hover {
+          transform: translateY(-2px) scale(1.04);
+          box-shadow: 0 8px 32px #a78bfa44;
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
+
+const styles = {
+  bg: {
+    minHeight: '100vh',
+    width: '100vw',
+    background: 'linear-gradient(120deg, #a78bfa 0%, #f472b6 100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    fontFamily: 'Montserrat, sans-serif',
+    overflow: 'hidden',
+  },
+  animatedBg: {
+    position: 'absolute',
+    top: '-20%',
+    left: '-20%',
+    width: '140%',
+    height: '140%',
+    background: 'radial-gradient(circle at 20% 30%, #fff3 0%, #fff0 70%), radial-gradient(circle at 80% 70%, #fff2 0%, #fff0 80%)',
+    zIndex: 0,
+    pointerEvents: 'none',
+    animation: 'moveBg 8s linear infinite alternate',
+  },
+  card: {
+    position: 'relative',
+    zIndex: 1,
+    background: 'rgba(255,255,255,0.15)',
+    boxShadow: '0 8px 32px 0 #1f26875e',
+    borderRadius: '24px',
+    padding: '2.5rem 2rem',
+    minWidth: 320,
+    maxWidth: 360,
+    width: '100%',
+    backdropFilter: 'blur(12px)',
+    border: '1.5px solid #fff3',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: '2rem',
+    fontWeight: 700,
+    color: '#fff',
+    marginBottom: 8,
+    letterSpacing: 1,
+  },
+  subtitle: {
+    color: '#f3e8ff',
+    fontWeight: 600,
+    marginBottom: 32,
+    fontSize: '1.1rem',
+  },
+  form: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 20,
+  },
+  inputGroup: {
+    display: 'flex',
+    alignItems: 'center',
+    background: 'rgba(255,255,255,0.25)',
+    borderRadius: 12,
+    padding: '0.5rem 1rem',
+    marginBottom: 12,
+    boxShadow: '0 2px 8px #fff1',
+    border: '1.5px solid #fff2',
+    transition: 'box-shadow 0.2s',
+  },
+  icon: {
+    color: '#a78bfa',
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    fontSize: '1rem',
+    color: '#fff',
+    fontWeight: 600,
+    padding: '0.5rem 0',
+    letterSpacing: 0.5,
+  },
+  button: {
+    marginTop: 12,
+    background: 'linear-gradient(90deg, #a78bfa, #f472b6, #f87171)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 16,
+    padding: '0.75rem 2rem',
+    fontWeight: 700,
+    fontSize: '1.1rem',
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px #a78bfa33',
+    transition: 'background 0.2s, transform 0.2s',
+  },
+};
 
 export default Login; 

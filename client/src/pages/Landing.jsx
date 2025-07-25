@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart, Sofa, Smartphone, TreePine, Star, ArrowRight, Menu, X, Play, TrendingUp, Award, Users, Sparkles, Zap, Heart, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const UVsStoreLanding = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
@@ -117,14 +119,13 @@ const UVsStoreLanding = () => {
           <div className="uvs-brand">
             <span className="uvs-brand-logo">UV</span>
             <span className="uvs-brand-title">UV's Store</span>
-                </div>
+          </div>
           <div className="uvs-nav-links">
-            <a href="#home">Home</a>
-            <a href="#categories">Categories</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <button className="uvs-shop-btn">
+            <button className="uvs-shop-btn" onClick={() => navigate('/home')}>
               <ShoppingCart size={20} style={{ marginRight: 8 }} />Shop Now
+            </button>
+            <button className="uvs-login-btn" onClick={() => navigate('/login')}>
+              Login
             </button>
           </div>
           <button className="uvs-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -133,11 +134,8 @@ const UVsStoreLanding = () => {
         </div>
         {isMenuOpen && (
           <div className="uvs-mobile-menu">
-            <a href="#home">Home</a>
-            <a href="#categories">Categories</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <button className="uvs-shop-btn">Shop Now</button>
+            <button className="uvs-shop-btn" onClick={() => { setIsMenuOpen(false); navigate('/home'); }}>Shop Now</button>
+            <button className="uvs-login-btn" onClick={() => { setIsMenuOpen(false); navigate('/login'); }}>Login</button>
           </div>
         )}
       </nav>
@@ -310,6 +308,8 @@ const UVsStoreLanding = () => {
         .uvs-nav-links a:hover { color: #a78bfa; }
         .uvs-shop-btn { background: linear-gradient(90deg, #a78bfa, #f472b6, #f87171); color: #fff; border: none; border-radius: 16px; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s, transform 0.2s; display: flex; align-items: center; }
         .uvs-shop-btn:hover { background: linear-gradient(90deg, #f472b6, #a78bfa, #f87171); transform: scale(1.05); }
+        .uvs-login-btn { background: none; border: 2px solid #fff; color: #fff; border-radius: 16px; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s, color 0.2s; display: flex; align-items: center; gap: 8px; }
+        .uvs-login-btn:hover { background: #fff; color: #18181b; }
         .uvs-menu-btn { display: none; background: none; border: none; color: #fff; cursor: pointer; }
         .uvs-mobile-menu { display: flex; flex-direction: column; gap: 1rem; background: #18181b; padding: 1rem; }
         @media (max-width: 900px) {
