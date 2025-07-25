@@ -12,9 +12,11 @@ const cartSlice = createSlice({
       const item = action.payload;
       const exist = state.items.find(i => i.product === item.product);
       if (exist) {
-        exist.quantity += item.quantity;
+        // Clamp to stock
+        exist.quantity = Math.min(exist.quantity + item.quantity, item.stock || exist.stock || 1);
+        exist.stock = item.stock || exist.stock || 1;
       } else {
-        state.items.push(item);
+        state.items.push({ ...item, stock: item.stock });
       }
       localStorage.setItem('cartItems', JSON.stringify(state.items));
     },
@@ -23,9 +25,12 @@ const cartSlice = createSlice({
       localStorage.setItem('cartItems', JSON.stringify(state.items));
     },
     updateQuantity: (state, action) => {
-      const { product, quantity } = action.payload;
+      const { product, quantity, stock } = action.payload;
       const item = state.items.find(i => i.product === product);
-      if (item) item.quantity = quantity;
+      if (item) {
+        const maxStock = stock || item.stock || 1;
+        item.quantity = Math.max(1, Math.min(quantity, maxStock));
+      }
       localStorage.setItem('cartItems', JSON.stringify(state.items));
     },
     clearCart: (state) => {

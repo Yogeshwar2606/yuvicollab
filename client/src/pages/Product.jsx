@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/cartSlice';
+import { addToCart } from '../../redux/cartSlice';
 
 const Product = () => {
   const { id } = useParams();
@@ -27,13 +27,20 @@ const Product = () => {
     fetchProduct();
   }, [id]);
 
+  useEffect(() => {
+    console.log('Product:', product);
+    console.log('Error:', error);
+    console.log('Loading:', loading);
+  }, [product, error, loading]);
+
   const handleAddToCart = () => {
-    dispatch(addToCart({ product: product._id, quantity }));
+    if (quantity < 1 || quantity > product.stock) return;
+    dispatch(addToCart({ product: product._id, quantity, name: product.name, price: Number(product.price), image: product.images[0], stock: product.stock }));
   };
 
   if (loading) return <div style={styles.loading}>Loading product...</div>;
-  if (error) return <div style={styles.error}>{error}</div>;
-  if (!product) return null;
+  if (error) return <div style={styles.error}>Error: {error}</div>;
+  if (!product) return <div style={styles.error}>Product not found.</div>;
 
   return (
     <div style={styles.bg}>
@@ -42,7 +49,7 @@ const Product = () => {
         <div style={styles.info}>
           <h1 style={styles.name}>{product.name}</h1>
           <p style={styles.category}>{product.category}</p>
-          <p style={styles.price}>₹{product.price}</p>
+          <p style={styles.price}>₹{Number(product.price).toLocaleString('en-IN')}</p>
           <p style={styles.desc}>{product.description}</p>
           <div style={styles.cartRow}>
             <input
@@ -50,7 +57,12 @@ const Product = () => {
               min={1}
               max={product.stock}
               value={quantity}
-              onChange={e => setQuantity(Number(e.target.value))}
+              onChange={e => {
+                let val = Number(e.target.value);
+                if (val < 1) val = 1;
+                if (val > product.stock) val = product.stock;
+                setQuantity(val);
+              }}
               style={styles.qtyInput}
             />
             <button style={styles.cartBtn} onClick={handleAddToCart} disabled={product.stock === 0}>
@@ -70,21 +82,25 @@ const styles = {
     background: '#fff',
     fontFamily: 'Montserrat, sans-serif',
     padding: '2rem 0',
+    width: '98vw',
+    overflowX: 'hidden',
   },
   container: {
-    maxWidth: 1100,
+    maxWidth: 900,
     margin: '0 auto',
     display: 'flex',
-    gap: 48,
+    gap: 32,
     alignItems: 'flex-start',
     background: '#f9f9fb',
     borderRadius: 24,
     boxShadow: '0 2px 16px #e5e7eb',
     padding: 32,
+    width: '100%',
+    boxSizing: 'border-box',
   },
   image: {
-    width: 400,
-    height: 400,
+    width: 320,
+    height: 320,
     objectFit: 'cover',
     borderRadius: 16,
     boxShadow: '0 2px 8px #e5e7eb',
@@ -97,7 +113,7 @@ const styles = {
     gap: 16,
   },
   name: {
-    fontSize: '2.2rem',
+    fontSize: '2rem',
     fontWeight: 800,
     color: '#a78bfa',
     margin: 0,
@@ -110,7 +126,7 @@ const styles = {
   },
   price: {
     fontWeight: 800,
-    fontSize: '1.5rem',
+    fontSize: '1.3rem',
     color: '#18181b',
     margin: '0.5rem 0',
   },
@@ -158,6 +174,7 @@ const styles = {
     fontWeight: 700,
     fontSize: '1.2rem',
     margin: '2rem 0',
+    background: '#fff',
   },
   error: {
     textAlign: 'center',
@@ -165,6 +182,7 @@ const styles = {
     fontWeight: 700,
     fontSize: '1.2rem',
     margin: '2rem 0',
+    background: '#fff',
   },
 };
 

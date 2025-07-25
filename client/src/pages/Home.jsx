@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, Sofa, Smartphone, TreePine, ShoppingCart } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   { label: 'All', value: '' },
@@ -17,6 +18,7 @@ const Home = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,7 +43,7 @@ const Home = () => {
   );
 
   const handleAddToCart = (product) => {
-    dispatch(addToCart({ product: product._id, quantity: 1 }));
+    dispatch(addToCart({ product: product._id, quantity: 1, name: product.name, price: Number(product.price), image: product.images[0], stock: product.stock }));
   };
 
   return (
@@ -97,10 +99,20 @@ const Home = () => {
           <div style={styles.grid}>
             {filteredProducts.map(product => (
               <div key={product._id} style={styles.productCard}>
-                <img src={product.images[0]} alt={product.name} style={styles.productImg} />
-                <h2 style={styles.productName}>{product.name}</h2>
+                <div style={styles.imgWrap}>
+                  <img src={product.images[0]} alt={product.name} style={styles.productImg} />
+                </div>
+                <h2
+                  style={styles.productName}
+                  onClick={() => navigate(`/product/${product._id}`)}
+                  tabIndex={0}
+                  onKeyDown={e => { if (e.key === 'Enter') navigate(`/product/${product._id}`); }}
+                  role="button"
+                >
+                  {product.name}
+                </h2>
                 <p style={styles.productCategory}>{product.category}</p>
-                <p style={styles.productPrice}>₹{product.price}</p>
+                <p style={styles.productPrice}>₹{Number(product.price).toLocaleString('en-IN')}</p>
                 <button
                   style={styles.cartBtn}
                   onClick={() => handleAddToCart(product)}
@@ -131,9 +143,14 @@ const styles = {
     fontFamily: 'Montserrat, sans-serif',
     padding: 0,
     margin: 0,
+    boxSizing: 'border-box',
+    overflowX: 'hidden',
+    width: '99vw',
+    position: 'relative' // ✅ optional, good for safely positioning elements inside
   },
+
   heroSection: {
-    width: '100vw',
+    width: '100%',
     background: '#f4f4f6',
     padding: '2.5rem 0 1.5rem 0',
     textAlign: 'center',
@@ -145,6 +162,8 @@ const styles = {
     maxWidth: 900,
     margin: '0 auto',
     padding: '0 2vw',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   heroTitle: {
     fontSize: '2.5rem',
@@ -164,7 +183,8 @@ const styles = {
     alignItems: 'center',
     margin: '2rem 0 1rem 0',
     gap: 16,
-    width: '100vw',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   searchBar: {
     display: 'flex',
@@ -176,6 +196,7 @@ const styles = {
     minWidth: 320,
     maxWidth: 600,
     width: '100%',
+    boxSizing: 'border-box',
   },
   searchInput: {
     border: 'none',
@@ -193,7 +214,8 @@ const styles = {
     marginTop: 8,
     flexWrap: 'wrap',
     justifyContent: 'center',
-    width: '100vw',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   categoryBtn: {
     border: 'none',
@@ -207,58 +229,83 @@ const styles = {
     marginBottom: 4,
   },
   productsWrap: {
-    width: '100vw',
-    maxWidth: '100vw',
-    margin: '2rem 0',
+    width: '98vw',
+    maxWidth: '1200px',
+    margin: '2rem auto',
     padding: 0,
+    boxSizing: 'border-box',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-    gap: '2rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '1.2rem',
     marginTop: '1rem',
-    width: '100vw',
-    padding: '0 2vw',
+    width: '100%',
+    padding: '0 1vw',
+    boxSizing: 'border-box',
   },
   productCard: {
     background: '#fff',
-    borderRadius: 18,
-    boxShadow: '0 2px 16px #e5e7eb',
-    padding: '1.5rem 1rem',
+    borderRadius: 12,
+    boxShadow: '0 1px 6px #e5e7eb',
+    padding: '0.8rem 0.6rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    transition: 'transform 0.2s, box-shadow 0.2s',
+    transition: 'transform 0.15s, box-shadow 0.15s',
     cursor: 'pointer',
-    border: '1.5px solid #f3e8ff',
-    minHeight: 340,
+    border: '1px solid #f3e8ff',
+    minHeight: 220,
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+    maxWidth: 210,
+    margin: '0 auto',
+  },
+  imgWrap: {
+    width: '100%',
+    aspectRatio: '1/1',
+    background: '#f4f4f6',
+    borderRadius: 8,
+    marginBottom: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    maxWidth: 170,
+    minHeight: 170,
   },
   productImg: {
     width: '100%',
-    height: 180,
+    height: '100%',
     objectFit: 'cover',
-    borderRadius: 12,
-    marginBottom: 16,
-    boxShadow: '0 2px 8px #e5e7eb',
+    borderRadius: 8,
     background: '#f4f4f6',
   },
   productName: {
     fontWeight: 700,
-    fontSize: '1.1rem',
-    margin: '0.5rem 0 0.2rem 0',
+    fontSize: '1rem',
+    margin: '0.3rem 0 0.1rem 0',
     color: '#a78bfa',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    outline: 'none',
+    textAlign: 'center',
+    lineHeight: 1.2,
   },
   productCategory: {
     color: '#f472b6',
     fontWeight: 600,
-    fontSize: '0.95rem',
-    marginBottom: 4,
+    fontSize: '0.85rem',
+    marginBottom: 2,
+    textAlign: 'center',
   },
   productPrice: {
     fontWeight: 800,
-    fontSize: '1.2rem',
+    fontSize: '1.05rem',
     color: '#18181b',
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: 4,
+    textAlign: 'center',
   },
   loading: {
     textAlign: 'center',
@@ -282,14 +329,14 @@ const styles = {
     margin: '2rem 0',
   },
   recentlyViewedWrap: {
-    width: '100vw',
-    maxWidth: '100vw',
+    width: '100%',
     margin: '2rem 0',
     padding: '0 2vw',
     background: '#f4f4f6',
     borderRadius: 16,
     boxShadow: '0 2px 8px #e5e7eb',
     marginTop: 32,
+    boxSizing: 'border-box',
   },
   recentlyViewedTitle: {
     fontWeight: 700,
@@ -307,15 +354,15 @@ const styles = {
     background: 'linear-gradient(90deg, #a78bfa, #f472b6)',
     color: '#fff',
     border: 'none',
-    borderRadius: 12,
-    padding: '0.5rem 1.2rem',
+    borderRadius: 10,
+    padding: '0.4rem 1rem',
     fontWeight: 700,
-    fontSize: '1rem',
+    fontSize: '0.95rem',
     cursor: 'pointer',
-    boxShadow: '0 2px 8px #a78bfa33',
+    boxShadow: '0 1px 4px #a78bfa22',
     transition: 'background 0.2s, transform 0.2s',
     outline: 'none',
-    marginTop: 12,
+    marginTop: 8,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

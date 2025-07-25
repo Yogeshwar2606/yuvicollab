@@ -291,10 +291,10 @@ const UVsStoreLanding = () => {
       <style>{`
         html, body, .uvs-landing-root { box-sizing: border-box; margin: 0; padding: 0; }
         *, *:before, *:after { box-sizing: inherit; }
-        .uvs-landing-root { font-family: 'Segoe UI', Arial, sans-serif; background: #18181b; color: #fff; width: 100vw; max-width: 100vw; overflow-x: hidden; }
+        .uvs-landing-root { font-family: 'Segoe UI', Arial, sans-serif; background: #18181b; color: #fff; width: 100%; max-width: 100%; overflow-x: hidden; }
         .uvs-nav, .uvs-nav-container, .uvs-hero, .uvs-features-section, .uvs-categories-section, .uvs-stats-section, .uvs-testimonials-section, .uvs-cta-section, .uvs-footer, .uvs-footer-container, .uvs-features-grid, .uvs-categories-grid, .uvs-stats-grid, .uvs-testimonials-grid {
           width: 100%;
-          max-width: 100vw;
+          max-width: 100%;
           box-sizing: border-box;
           margin: 0 auto;
         }
