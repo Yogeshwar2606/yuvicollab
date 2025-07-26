@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuantity, removeFromCart } from '../../redux/cartSlice';
+import { updateQuantityWithSync, removeFromCartWithSync } from '../utils/cartUtils';
 import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const cartItems = useSelector(state => state.cart.items);
+  const user = useSelector(state => state.user.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,10 +34,10 @@ const Cart = () => {
                   min={1}
                   max={item.stock || 1}
                   value={item.quantity}
-                  onChange={e => dispatch(updateQuantity({ product: item.product, quantity: Number(e.target.value), stock: item.stock }))}
+                  onChange={e => updateQuantityWithSync(dispatch, user, { _id: item.product }, Number(e.target.value), item.stock)}
                   style={styles.qty}
                 />
-                <button style={styles.removeBtn} onClick={() => dispatch(removeFromCart(item.product))}>Remove</button>
+                <button style={styles.removeBtn} onClick={() => removeFromCartWithSync(dispatch, user, item.product)}>Remove</button>
               </div>
             ))}
             <div style={styles.totalRow}>

@@ -10,9 +10,11 @@ import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import AddressBook from './pages/AddressBook';
 import Checkout from './pages/Checkout';
+import OrderHistory from './pages/OrderHistory';
+import OrderDetails from './pages/OrderDetails';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
-import { handleLogout } from '../utils/auth';
+import { handleLogout } from './utils/auth';
 
 function AlreadyLoggedIn({ children }) {
   const user = useSelector(state => state.user.user);
@@ -128,6 +130,8 @@ function App() {
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="/address" element={<ProtectedRoute><AddressBook /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+        <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Register User
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, phone, password } = req.body;
     // Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -18,6 +18,7 @@ exports.registerUser = async (req, res) => {
     const user = await User.create({
       name,
       email,
+      phone,
       password: hashedPassword,
       role: 'customer',
     });
@@ -31,10 +32,50 @@ exports.registerUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       role: user.role,
       token,
     });
   } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update User Profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, email, phone, avatar } = req.body;
+    const userId = req.user.id; // From auth middleware
+    
+    // Check if email is already taken by another user
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already registered' });
+      }
+    }
+    
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, email, phone, avatar },
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      avatar: updatedUser.avatar,
+      role: updatedUser.role,
+    });
+  } catch (err) {
+    console.error('Profile update error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -61,6 +102,7 @@ exports.loginUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      phone: user.phone,
       role: user.role,
       token,
     });

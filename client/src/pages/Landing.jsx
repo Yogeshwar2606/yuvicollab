@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart, Sofa, Smartphone, TreePine, Star, ArrowRight, Menu, X, Play, TrendingUp, Award, Users, Sparkles, Zap, Heart, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const UVsStoreLanding = () => {
+const Landing = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState({});
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [scrollY, setScrollY] = useState(0);
+  const [showIndicators, setShowIndicators] = useState(true); // NEW: for hiding bubbles
   const heroRef = useRef(null);
 
   const categories = [
@@ -75,9 +76,16 @@ const UVsStoreLanding = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 6000);
+    }, 3000); // CHANGED: 3 seconds
     return () => clearInterval(interval);
   }, []);
+
+  // Hide indicators after 3 seconds
+  useEffect(() => {
+    setShowIndicators(true); // always show on mount/slide change
+    const timeout = setTimeout(() => setShowIndicators(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [currentSlide]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -147,15 +155,17 @@ const UVsStoreLanding = () => {
           <h1>{heroSlides[currentSlide].title}</h1>
           <p>{heroSlides[currentSlide].subtitle}</p>
           <div className="uvs-hero-btns">
-            <button className="uvs-shop-btn">Explore Collection <ArrowRight size={20} /></button>
-            <button className="uvs-secondary-btn"><Play size={20} /> Watch Story</button>
+            <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Explore Collection <ArrowRight size={20} /></button>
+            {/* Removed Watch Story button */}
           </div>
         </div>
-        <div className="uvs-hero-indicators">
-          {heroSlides.map((_, idx) => (
-            <button key={idx} className={idx === currentSlide ? 'active' : ''} onClick={() => setCurrentSlide(idx)} />
-          ))}
-        </div>
+        {showIndicators && (
+          <div className="uvs-hero-indicators">
+            {heroSlides.map((_, idx) => (
+              <button key={idx} className={idx === currentSlide ? 'active' : ''} onClick={() => setCurrentSlide(idx)} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Features Section */}
@@ -182,7 +192,7 @@ const UVsStoreLanding = () => {
               <div className="uvs-category-icon" style={{ color: category.color }}>{category.icon}</div>
               <h3>{category.title}</h3>
               <p>{category.description}</p>
-              <button className="uvs-shop-btn">Shop Now <ArrowRight size={16} /></button>
+              <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Shop Now <ArrowRight size={16} /></button>
               </div>
             ))}
         </div>
@@ -235,7 +245,7 @@ const UVsStoreLanding = () => {
         <h2>Ready to Transform <span>Your Space?</span></h2>
         <p>Join thousands of satisfied customers who have transformed their homes with UV's Store's premium collection</p>
         <div className="uvs-cta-btns">
-          <button className="uvs-shop-btn">Start Shopping <ArrowRight size={20} /></button>
+          <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Start Shopping <ArrowRight size={20} /></button>
           <button className="uvs-secondary-btn">Contact Us</button>
         </div>
       </section>
@@ -380,4 +390,4 @@ const UVsStoreLanding = () => {
   );
 };
 
-export default UVsStoreLanding;
+export default Landing;

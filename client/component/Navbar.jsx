@@ -2,9 +2,7 @@ import React from 'react';
 import { ShoppingCart, User, Heart, LogOut } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../redux/userSlice';
-import { clearCart } from '../redux/cartSlice';
-import { clearWishlist } from '../redux/wishlistSlice';
+import { handleLogout } from '../src/utils/auth';
 
 const Navbar = () => {
   const cartCount = useSelector(state => state.cart.items.reduce((sum, item) => sum + item.quantity, 0));
@@ -35,12 +33,7 @@ const Navbar = () => {
           {user && (
             <button 
               style={styles.iconBtn} 
-              onClick={() => {
-                dispatch(logout());
-                dispatch(clearCart());
-                dispatch(clearWishlist());
-                navigate('/');
-              }}
+              onClick={() => handleLogout(dispatch, navigate)}
               title="Logout"
             >
               <LogOut size={26} />
@@ -54,7 +47,7 @@ const Navbar = () => {
 
 const styles = {
   navBg: {
-    width: '99vw',
+    width: '100vw',
     background: '#fff',
     boxShadow: '0 2px 12px #e5e7eb',
     position: 'sticky',
