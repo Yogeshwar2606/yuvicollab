@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { User, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice';
 
 function Register() {
   const [name, setName] = useState('');
@@ -10,6 +12,7 @@ function Register() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +28,9 @@ function Register() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Registration failed');
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 1500);
+      // Store user info in Redux and localStorage
+      dispatch(setUser(data));
+      setTimeout(() => navigate('/home'), 1500);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -82,8 +87,31 @@ function Register() {
         </form>
         {error && <div style={{ color: '#ff6b6b', marginTop: 16, fontWeight: 600 }}>{error}</div>}
         {success && <div style={{ color: '#10b981', marginTop: 16, fontWeight: 600 }}>Registration successful! Redirecting...</div>}
+        <div style={{ marginTop: 24, textAlign: 'center' }}>
+          <span style={{ color: '#fff', fontWeight: 500, fontSize: '1rem' }}>Already have an account?</span>
+          <button
+            onClick={() => navigate('/login')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#a78bfa',
+              fontWeight: 700,
+              fontSize: '1rem',
+              marginLeft: 8,
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              transition: 'color 0.2s',
+            }}
+            onMouseOver={e => (e.target.style.color = '#f472b6')}
+            onMouseOut={e => (e.target.style.color = '#a78bfa')}
+            disabled={loading}
+          >
+            Login
+          </button>
+        </div>
       </div>
       <style>{`
+        html, body { margin: 0; padding: 0; }
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
         .register-card-animate {
           animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1);
@@ -106,8 +134,8 @@ function Register() {
 
 const styles = {
   bg: {
-    minHeight: '100vh',
-    width: '100vw',
+    height: '100vh',
+    width: '99vw',
     background: 'linear-gradient(120deg, #a78bfa 0%, #f472b6 100%)',
     display: 'flex',
     alignItems: 'center',

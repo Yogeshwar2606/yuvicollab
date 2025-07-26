@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -9,6 +11,7 @@ function Login() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +27,8 @@ function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed');
       setSuccess(true);
-      // Optionally store token/user info here
+      // Store user info in Redux and localStorage
+      dispatch(setUser(data));
       setTimeout(() => navigate('/home'), 1000);
     } catch (err) {
       setError(err.message);
@@ -94,6 +98,7 @@ function Login() {
         </div>
       </div>
       <style>{`
+        html, body { margin: 0; padding: 0; }
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
         .login-card-animate {
           animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1);
@@ -116,8 +121,8 @@ function Login() {
 
 const styles = {
   bg: {
-    minHeight: '100vh',
-    width: '100vw',
+    height: '100vh',
+    width: '99vw',
     background: 'linear-gradient(120deg, #a78bfa 0%, #f472b6 100%)',
     display: 'flex',
     alignItems: 'center',

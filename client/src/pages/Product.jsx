@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { addWishlistItem, removeWishlistItem } from '../../redux/wishlistSlice';
+import { addRecentlyViewed } from '../../redux/userSlice';
+import { Heart } from 'lucide-react';
 
 const Product = () => {
   const { id } = useParams();
@@ -11,6 +14,9 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
 
+  const wishlist = useSelector(state => state.wishlist.items);
+  const user = useSelector(state => state.user.user);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -18,6 +24,8 @@ const Product = () => {
         if (!res.ok) throw new Error('Product not found');
         const data = await res.json();
         setProduct(data);
+        // Add to recently viewed
+        dispatch(addRecentlyViewed(data));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -25,13 +33,24 @@ const Product = () => {
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, dispatch]);
 
   useEffect(() => {
     console.log('Product:', product);
     console.log('Error:', error);
     console.log('Loading:', loading);
   }, [product, error, loading]);
+
+  const isInWishlist = (productId) => wishlist.some(item => item.product && (item.product._id === productId || item.product === productId));
+  const handleWishlist = (productId) => {
+    if (!user) return;
+    if (isInWishlist(productId)) {
+      const item = wishlist.find(i => i.product && (i.product._id === productId || i.product === productId));
+      dispatch(removeWishlistItem({ itemId: item._id, token: user.token }));
+    } else {
+      dispatch(addWishlistItem({ productId, token: user.token }));
+    }
+  };
 
   const handleAddToCart = () => {
     if (quantity < 1 || quantity > product.stock) return;
@@ -47,7 +66,16 @@ const Product = () => {
       <div style={styles.container}>
         <img src={product.images[0]} alt={product.name} style={styles.image} />
         <div style={styles.info}>
-          <h1 style={styles.name}>{product.name}</h1>
+          <h1 style={styles.name}>{product.name}
+            <button
+              style={{ ...styles.heartBtn, color: isInWishlist(product._id) ? '#f472b6' : '#a78bfa', marginLeft: 12, verticalAlign: 'middle' }}
+              onClick={() => handleWishlist(product._id)}
+              aria-label={isInWishlist(product._id) ? 'Remove from wishlist' : 'Add to wishlist'}
+              tabIndex={0}
+            >
+              <Heart fill={isInWishlist(product._id) ? '#f472b6' : 'none'} size={22} />
+            </button>
+          </h1>
           <p style={styles.category}>{product.category}</p>
           <p style={styles.price}>₹{Number(product.price).toLocaleString('en-IN')}</p>
           <p style={styles.desc}>{product.description}</p>
@@ -183,6 +211,18 @@ const styles = {
     fontSize: '1.2rem',
     margin: '2rem 0',
     background: '#fff',
+  },
+  heartBtn: {
+    background: 'rgba(255,255,255,0.8)',
+    border: 'none',
+    borderRadius: '50%',
+    padding: 6,
+    cursor: 'pointer',
+    zIndex: 2,
+    boxShadow: '0 2px 8px #a78bfa22',
+    transition: 'background 0.2s, color 0.2s',
+    outline: 'none',
+    marginLeft: 8,
   },
 };
 

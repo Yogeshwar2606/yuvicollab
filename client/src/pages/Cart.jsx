@@ -43,7 +43,9 @@ const Cart = () => {
               <span style={styles.totalLabel}>Total:</span>
               <span style={styles.totalPrice}>₹{Number(total).toLocaleString('en-IN')}</span>
             </div>
-            <button style={styles.checkoutBtn} disabled={cartItems.length === 0}>Proceed to Checkout</button>
+            <button style={styles.checkoutBtn} disabled={cartItems.length === 0} onClick={() => navigate('/checkout')}>
+              Proceed to Checkout
+            </button>
           </>
         )}
       </div>

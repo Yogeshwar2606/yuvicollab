@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Sofa, Smartphone, TreePine, ShoppingCart } from 'lucide-react';
-import { useDispatch } from 'react-redux';
+import { Search, Sofa, Smartphone, TreePine, ShoppingCart, Heart } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { addWishlistItem, removeWishlistItem } from '../../redux/wishlistSlice';
 import { useNavigate } from 'react-router-dom';
 
 const categories = [
@@ -19,6 +20,10 @@ const Home = () => {
   const [category, setCategory] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const wishlist = useSelector(state => state.wishlist.items);
+  const user = useSelector(state => state.user.user);
+  const recentlyViewed = useSelector(state => state.user.recentlyViewedProducts);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -44,6 +49,17 @@ const Home = () => {
 
   const handleAddToCart = (product) => {
     dispatch(addToCart({ product: product._id, quantity: 1, name: product.name, price: Number(product.price), image: product.images[0], stock: product.stock }));
+  };
+
+  const isInWishlist = (productId) => wishlist.some(item => item.product && (item.product._id === productId || item.product === productId));
+  const handleWishlist = (productId, itemId) => {
+    if (!user) return;
+    if (isInWishlist(productId)) {
+      const item = wishlist.find(i => i.product && (i.product._id === productId || i.product === productId));
+      dispatch(removeWishlistItem({ itemId: item._id, token: user.token }));
+    } else {
+      dispatch(addWishlistItem({ productId, token: user.token }));
+    }
   };
 
   return (
@@ -101,6 +117,14 @@ const Home = () => {
               <div key={product._id} style={styles.productCard}>
                 <div style={styles.imgWrap}>
                   <img src={product.images[0]} alt={product.name} style={styles.productImg} />
+                  <button
+                    style={{ ...styles.heartBtn, color: isInWishlist(product._id) ? '#f472b6' : '#a78bfa' }}
+                    onClick={() => handleWishlist(product._id)}
+                    aria-label={isInWishlist(product._id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                    tabIndex={0}
+                  >
+                    <Heart fill={isInWishlist(product._id) ? '#f472b6' : 'none'} size={22} />
+                  </button>
                 </div>
                 <h2
                   style={styles.productName}
@@ -127,10 +151,32 @@ const Home = () => {
         )}
       </div>
 
-      {/* Recently Viewed Placeholder */}
+      {/* Recently Viewed Section */}
       <div style={styles.recentlyViewedWrap}>
         <h3 style={styles.recentlyViewedTitle}>Recently Viewed</h3>
-        <div style={styles.recentlyViewedPlaceholder}>Sign in to see your recently viewed products.</div>
+        {recentlyViewed.length === 0 ? (
+          <div style={styles.recentlyViewedPlaceholder}>No products viewed yet.</div>
+        ) : (
+          <div style={styles.grid}>
+            {recentlyViewed.slice(0, 8).map(product => (
+              <div
+                key={product._id}
+                style={styles.productCard}
+                onClick={() => navigate(`/product/${product._id}`)}
+                tabIndex={0}
+                onKeyDown={e => { if (e.key === 'Enter') navigate(`/product/${product._id}`); }}
+                role="button"
+              >
+                <div style={styles.imgWrap}>
+                  <img src={product.images[0]} alt={product.name} style={styles.productImg} />
+                </div>
+                <h2 style={styles.productName}>{product.name}</h2>
+                <p style={styles.productCategory}>{product.category}</p>
+                <p style={styles.productPrice}>₹{Number(product.price).toLocaleString('en-IN')}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -248,7 +294,7 @@ const styles = {
     background: '#fff',
     borderRadius: 12,
     boxShadow: '0 1px 6px #e5e7eb',
-    padding: '0.8rem 0.6rem',
+    padding: '1.2rem 1rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -258,7 +304,7 @@ const styles = {
     minHeight: 220,
     boxSizing: 'border-box',
     overflow: 'hidden',
-    maxWidth: 210,
+    maxWidth: 300,
     margin: '0 auto',
   },
   imgWrap: {
@@ -271,8 +317,9 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    maxWidth: 170,
-    minHeight: 170,
+    maxWidth: 240,
+    minHeight: 200,
+    position: 'relative', // Added for heart button positioning
   },
   productImg: {
     width: '100%',
@@ -367,6 +414,20 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
+  },
+  heartBtn: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    background: 'rgba(255,255,255,0.8)',
+    border: 'none',
+    borderRadius: '50%',
+    padding: 6,
+    cursor: 'pointer',
+    zIndex: 2,
+    boxShadow: '0 2px 8px #a78bfa22',
+    transition: 'background 0.2s, color 0.2s',
+    outline: 'none',
   },
 };
 

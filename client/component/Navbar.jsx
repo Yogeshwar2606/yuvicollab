@@ -1,11 +1,17 @@
 import React from 'react';
-import { ShoppingCart, User } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { ShoppingCart, User, Heart, LogOut } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../redux/userSlice';
+import { clearCart } from '../redux/cartSlice';
+import { clearWishlist } from '../redux/wishlistSlice';
 
 const Navbar = () => {
   const cartCount = useSelector(state => state.cart.items.reduce((sum, item) => sum + item.quantity, 0));
+  const wishlistCount = useSelector(state => state.wishlist.items.length);
+  const user = useSelector(state => state.user.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <nav style={styles.navBg}>
@@ -15,6 +21,10 @@ const Navbar = () => {
           <span style={styles.title}>UV's Store</span>
         </div>
         <div style={styles.icons}>
+          <button style={styles.iconBtn} onClick={() => navigate('/wishlist')}>
+            <Heart size={26} />
+            {wishlistCount > 0 && <span style={styles.cartBadge}>{wishlistCount}</span>}
+          </button>
           <button style={styles.iconBtn} onClick={() => navigate('/cart')}>
             <ShoppingCart size={26} />
             {cartCount > 0 && <span style={styles.cartBadge}>{cartCount}</span>}
@@ -22,6 +32,20 @@ const Navbar = () => {
           <button style={styles.iconBtn} onClick={() => navigate('/profile')}>
             <User size={26} />
           </button>
+          {user && (
+            <button 
+              style={styles.iconBtn} 
+              onClick={() => {
+                dispatch(logout());
+                dispatch(clearCart());
+                dispatch(clearWishlist());
+                navigate('/');
+              }}
+              title="Logout"
+            >
+              <LogOut size={26} />
+            </button>
+          )}
         </div>
       </div>
     </nav>
