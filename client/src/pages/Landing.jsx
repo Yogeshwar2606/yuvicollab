@@ -1,6 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, Sofa, Smartphone, TreePine, Star, ArrowRight, Menu, X, Play, TrendingUp, Award, Users, Sparkles, Zap, Heart, Shield } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  ShoppingCart,
+  Sofa,
+  Smartphone,
+  TreePine,
+  Star,
+  ArrowRight,
+  Menu,
+  X,
+  Play,
+  TrendingUp,
+  Award,
+  Users,
+  Sparkles,
+  Zap,
+  Heart,
+  Shield,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -16,61 +33,108 @@ const Landing = () => {
     {
       icon: <Sofa size={64} />,
       title: "Premium Furniture",
-      description: "Transform your space with our curated collection of modern and classic furniture pieces that blend luxury with functionality.",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop",
+      description:
+        "Transform your space with our curated collection of modern and classic furniture pieces that blend luxury with functionality.",
+      image:
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop",
       color: "#fbbf24",
-      accent: "amber"
+      accent: "amber",
     },
     {
       icon: <Smartphone size={64} />,
       title: "Latest Electronics",
-      description: "Discover cutting-edge technology and electronics that power your digital lifestyle with innovation and style.",
-      image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=400&fit=crop",
+      description:
+        "Discover cutting-edge technology and electronics that power your digital lifestyle with innovation and style.",
+      image:
+        "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=400&fit=crop",
       color: "#06b6d4",
-      accent: "blue"
+      accent: "blue",
     },
     {
       icon: <TreePine size={64} />,
       title: "Beautiful Landscapes",
-      description: "Bring nature indoors with our stunning landscape art and outdoor décor collection that inspires tranquility.",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+      description:
+        "Bring nature indoors with our stunning landscape art and outdoor décor collection that inspires tranquility.",
+      image:
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
       color: "#10b981",
-      accent: "green"
-    }
+      accent: "green",
+    },
   ];
 
   const features = [
-    { icon: <TrendingUp size={32} />, title: "Premium Quality", desc: "Curated selection of high-end products", color: "#a78bfa" },
-    { icon: <Award size={32} />, title: "Award Winning", desc: "Recognized for excellence in service", color: "#38bdf8" },
-    { icon: <Users size={32} />, title: "Trusted by 10K+", desc: "Happy customers worldwide", color: "#10b981" },
-    { icon: <Shield size={32} />, title: "Secure Shopping", desc: "100% safe and secure transactions", color: "#f59e42" }
+    {
+      icon: <TrendingUp size={32} />,
+      title: "Premium Quality",
+      desc: "Curated selection of high-end products",
+      color: "#a78bfa",
+    },
+    {
+      icon: <Award size={32} />,
+      title: "Award Winning",
+      desc: "Recognized for excellence in service",
+      color: "#38bdf8",
+    },
+    {
+      icon: <Users size={32} />,
+      title: "Trusted by 10K+",
+      desc: "Happy customers worldwide",
+      color: "#10b981",
+    },
+    {
+      icon: <Shield size={32} />,
+      title: "Secure Shopping",
+      desc: "100% safe and secure transactions",
+      color: "#f59e42",
+    },
   ];
 
   const heroSlides = [
     {
       title: "Redefine Your Space",
       subtitle: "Discover Premium Furniture, Electronics & Landscapes",
-      bg: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&h=900&fit=crop",
-      overlay: "rgba(80, 0, 120, 0.5)"
+             bg: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1400&h=900&fit=crop",
+      overlay: "rgba(0, 0, 0, 0.1)",
     },
     {
       title: "Tech That Inspires",
       subtitle: "Latest Electronics for Modern Living",
       bg: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&h=900&fit=crop",
-      overlay: "rgba(0, 120, 200, 0.5)"
+      overlay: "rgba(0, 120, 200, 0.3)",
     },
     {
       title: "Nature Meets Design",
       subtitle: "Beautiful Landscapes for Every Space",
       bg: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1400&h=900&fit=crop",
-      overlay: "rgba(16, 185, 129, 0.5)"
-    }
+      overlay: "rgba(16, 185, 129, 0.3)",
+    },
   ];
 
   const testimonials = [
-    { name: "Sarah Johnson", role: "Interior Designer", text: "UV's Store transformed my vision into reality. Exceptional quality and service!", rating: 5, avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face" },
-    { name: "Mike Chen", role: "Tech Enthusiast", text: "Best electronics store! Cutting-edge products with unmatched customer support.", rating: 5, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" },
-    { name: "Emma Davis", role: "Homeowner", text: "The landscape collection is breathtaking. My home feels like a luxury retreat now.", rating: 5, avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face" }
+    {
+      name: "Sarah Johnson",
+      role: "Interior Designer",
+      text: "UV's Store transformed my vision into reality. Exceptional quality and service!",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face",
+    },
+    {
+      name: "Mike Chen",
+      role: "Tech Enthusiast",
+      text: "Best electronics store! Cutting-edge products with unmatched customer support.",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face",
+    },
+    {
+      name: "Emma Davis",
+      role: "Homeowner",
+      text: "The landscape collection is breathtaking. My home feels like a luxury retreat now.",
+      rating: 5,
+      avatar:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face",
+    },
   ];
 
   useEffect(() => {
@@ -94,11 +158,11 @@ const Landing = () => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -108,11 +172,11 @@ const Landing = () => {
         entries.forEach((entry) => {
           setIsVisible((prev) => ({
             ...prev,
-            [entry.target.id]: entry.isIntersecting
+            [entry.target.id]: entry.isIntersecting,
           }));
         });
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.1, rootMargin: "50px" }
     );
     const elements = document.querySelectorAll('[id^="animate-"]');
     elements.forEach((el) => observer.observe(el));
@@ -129,43 +193,70 @@ const Landing = () => {
             <span className="uvs-brand-title">UV's Store</span>
           </div>
           <div className="uvs-nav-links">
-            <button className="uvs-shop-btn" onClick={() => navigate('/home')}>
-              <ShoppingCart size={20} style={{ marginRight: 8 }} />Shop Now
+            <button className="uvs-shop-btn" onClick={() => navigate("/home")}>
+              <ShoppingCart size={20} style={{ marginRight: 8 }} />
+              Shop Now
             </button>
-            <button className="uvs-login-btn" onClick={() => navigate('/login')}>
+            <button
+              className="uvs-login-btn"
+              onClick={() => navigate("/login")}
+            >
               Login
             </button>
           </div>
-          <button className="uvs-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button
+            className="uvs-menu-btn"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
         {isMenuOpen && (
           <div className="uvs-mobile-menu">
-            <button className="uvs-shop-btn" onClick={() => { setIsMenuOpen(false); navigate('/home'); }}>Shop Now</button>
-            <button className="uvs-login-btn" onClick={() => { setIsMenuOpen(false); navigate('/login'); }}>Login</button>
+            <button
+              className="uvs-shop-btn"
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate("/home");
+              }}
+            >
+              Shop Now
+            </button>
+            <button
+              className="uvs-login-btn"
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate("/login");
+              }}
+            >
+              Login
+            </button>
           </div>
         )}
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="uvs-hero" ref={heroRef} style={{ backgroundImage: `url(${heroSlides[currentSlide].bg})` }}>
-        <div className="uvs-hero-overlay" style={{ background: heroSlides[currentSlide].overlay }} />
+      <section
+        id="home"
+        className="uvs-hero"
+        ref={heroRef}
+        style={{ backgroundImage: `url(${heroSlides[currentSlide].bg})` }}
+      >
+        <div
+          className="uvs-hero-overlay"
+          style={{ background: heroSlides[currentSlide].overlay }}
+        />
         <div className="uvs-hero-content">
           <h1>{heroSlides[currentSlide].title}</h1>
           <p>{heroSlides[currentSlide].subtitle}</p>
           <div className="uvs-hero-btns">
-            <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Explore Collection <ArrowRight size={20} /></button>
+            <button className="uvs-shop-btn" onClick={() => navigate("/home")}>
+              Explore Collection <ArrowRight size={20} />
+            </button>
             {/* Removed Watch Story button */}
           </div>
         </div>
-        {showIndicators && (
-          <div className="uvs-hero-indicators">
-            {heroSlides.map((_, idx) => (
-              <button key={idx} className={idx === currentSlide ? 'active' : ''} onClick={() => setCurrentSlide(idx)} />
-            ))}
-          </div>
-        )}
+        
       </section>
 
       {/* Features Section */}
@@ -173,12 +264,21 @@ const Landing = () => {
         <h2>Why Choose UV's Store</h2>
         <div className="uvs-features-grid">
           {features.map((feature, idx) => (
-            <div className="uvs-feature-card" key={idx} style={{ borderColor: feature.color }}>
-              <div className="uvs-feature-icon" style={{ color: feature.color }}>{feature.icon}</div>
+            <div
+              className="uvs-feature-card"
+              key={idx}
+              style={{ borderColor: feature.color }}
+            >
+              <div
+                className="uvs-feature-icon"
+                style={{ color: feature.color }}
+              >
+                {feature.icon}
+              </div>
               <h3>{feature.title}</h3>
               <p>{feature.desc}</p>
-              </div>
-            ))}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -187,14 +287,31 @@ const Landing = () => {
         <h2>Explore Our Universe</h2>
         <div className="uvs-categories-grid">
           {categories.map((category, idx) => (
-            <div className="uvs-category-card" key={idx} style={{ borderColor: category.color }}>
-              <div className="uvs-category-img" style={{ backgroundImage: `url(${category.image})` }} />
-              <div className="uvs-category-icon" style={{ color: category.color }}>{category.icon}</div>
+            <div
+              className="uvs-category-card"
+              key={idx}
+              style={{ borderColor: category.color }}
+            >
+              <div
+                className="uvs-category-img"
+                style={{ backgroundImage: `url(${category.image})` }}
+              />
+              <div
+                className="uvs-category-icon"
+                style={{ color: category.color }}
+              >
+                {category.icon}
+              </div>
               <h3>{category.title}</h3>
               <p>{category.description}</p>
-              <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Shop Now <ArrowRight size={16} /></button>
-              </div>
-            ))}
+              <button
+                className="uvs-shop-btn"
+                onClick={() => navigate("/home")}
+              >
+                Shop Now <ArrowRight size={16} />
+              </button>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -202,18 +319,34 @@ const Landing = () => {
       <section className="uvs-stats-section">
         <div className="uvs-stats-grid">
           {[
-            { number: "50K+", label: "Happy Customers", icon: <Heart size={32} /> },
-            { number: "25K+", label: "Products Sold", icon: <ShoppingCart size={32} /> },
-            { number: "100+", label: "Premium Brands", icon: <Award size={32} /> },
-            { number: "24/7", label: "Expert Support", icon: <Shield size={32} /> }
+            {
+              number: "50K+",
+              label: "Happy Customers",
+              icon: <Heart size={32} />,
+            },
+            {
+              number: "25K+",
+              label: "Products Sold",
+              icon: <ShoppingCart size={32} />,
+            },
+            {
+              number: "100+",
+              label: "Premium Brands",
+              icon: <Award size={32} />,
+            },
+            {
+              number: "24/7",
+              label: "Expert Support",
+              icon: <Shield size={32} />,
+            },
           ].map((stat, idx) => (
             <div className="uvs-stat-card" key={idx}>
               <div className="uvs-stat-icon">{stat.icon}</div>
               <div className="uvs-stat-number">{stat.number}</div>
               <div className="uvs-stat-label">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Testimonials Section */}
@@ -223,29 +356,48 @@ const Landing = () => {
           {testimonials.map((testimonial, idx) => (
             <div className="uvs-testimonial-card" key={idx}>
               <div className="uvs-testimonial-stars">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} size={18} style={{ color: '#facc15', marginRight: 2, fill: '#facc15' }} />
-                  ))}
-                </div>
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={18}
+                    style={{
+                      color: "#facc15",
+                      marginRight: 2,
+                      fill: "#facc15",
+                    }}
+                  />
+                ))}
+              </div>
               <p className="uvs-testimonial-text">"{testimonial.text}"</p>
               <div className="uvs-testimonial-user">
-                <img src={testimonial.avatar} alt={testimonial.name} className="uvs-testimonial-avatar" />
-                  <div>
+                <img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className="uvs-testimonial-avatar"
+                />
+                <div>
                   <div className="uvs-testimonial-name">{testimonial.name}</div>
                   <div className="uvs-testimonial-role">{testimonial.role}</div>
                 </div>
-                </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="uvs-cta-section">
-        <h2>Ready to Transform <span>Your Space?</span></h2>
-        <p>Join thousands of satisfied customers who have transformed their homes with UV's Store's premium collection</p>
+        <h2>
+          Ready to Transform <span>Your Space?</span>
+        </h2>
+        <p>
+          Join thousands of satisfied customers who have transformed their homes
+          with UV's Store's premium collection
+        </p>
         <div className="uvs-cta-btns">
-          <button className="uvs-shop-btn" onClick={() => navigate('/home')}>Start Shopping <ArrowRight size={20} /></button>
+          <button className="uvs-shop-btn" onClick={() => navigate("/home")}>
+            Start Shopping <ArrowRight size={20} />
+          </button>
           <button className="uvs-secondary-btn">Contact Us</button>
         </div>
       </section>
@@ -256,8 +408,12 @@ const Landing = () => {
           <div className="uvs-footer-brand">
             <span className="uvs-brand-logo">UV</span>
             <span className="uvs-brand-title">UV's Store</span>
-            <p>Premium furniture, electronics, and landscapes for modern living. Transform your space with our curated collection of luxury products.</p>
-                  </div>
+            <p>
+              Premium furniture, electronics, and landscapes for modern living.
+              Transform your space with our curated collection of luxury
+              products.
+            </p>
+          </div>
           <div className="uvs-footer-links">
             <div>
               <h4>Categories</h4>
@@ -268,7 +424,7 @@ const Landing = () => {
                 <li>Home Accessories</li>
                 <li>Outdoor Collection</li>
               </ul>
-                </div>
+            </div>
             <div>
               <h4>Support</h4>
               <ul>
@@ -300,6 +456,9 @@ const Landing = () => {
       {/* Component-scoped CSS */}
       <style>{`
         html, body, .uvs-landing-root { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar {
+          display: none;
+        }
         *, *:before, *:after { box-sizing: inherit; }
         .uvs-landing-root { font-family: 'Segoe UI', Arial, sans-serif; background: #18181b; color: #fff; width: 100%; max-width: 100%; overflow-x: hidden; }
         .uvs-nav, .uvs-nav-container, .uvs-hero, .uvs-features-section, .uvs-categories-section, .uvs-stats-section, .uvs-testimonials-section, .uvs-cta-section, .uvs-footer, .uvs-footer-container, .uvs-features-grid, .uvs-categories-grid, .uvs-stats-grid, .uvs-testimonials-grid {
@@ -311,22 +470,20 @@ const Landing = () => {
         .uvs-nav { position: fixed; top: 0; background: #18181b; z-index: 100; border-bottom: 1px solid #222; }
         .uvs-nav-container { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2vw; }
         .uvs-brand { display: flex; align-items: center; gap: 12px; }
-        .uvs-brand-logo { background: linear-gradient(135deg, #a78bfa, #f472b6, #f87171); color: #fff; font-weight: bold; font-size: 1.5rem; border-radius: 12px; padding: 0.5rem 1rem; }
-        .uvs-brand-title { font-size: 1.5rem; font-weight: bold; background: linear-gradient(90deg, #fff, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .uvs-brand-logo { background: linear-gradient(135deg,rgb(14, 189, 69),rgb(0, 117, 78),rgb(10, 173, 213)); color: #fff; font-weight: bold; font-size: 1.5rem; border-radius: 12px; padding: 0.5rem 1rem; }
+        .uvs-brand-title { font-size: 1.5rem; font-weight: bold; background:rgb(255, 255, 255); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .uvs-nav-links { display: flex; align-items: center; gap: 2rem; }
         .uvs-nav-links a { color: #fff; text-decoration: none; font-size: 1rem; transition: color 0.2s; }
         .uvs-nav-links a:hover { color: #a78bfa; }
-        .uvs-shop-btn { background: linear-gradient(90deg, #a78bfa, #f472b6, #f87171); color: #fff; border: none; border-radius: 16px; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s, transform 0.2s; display: flex; align-items: center; }
-        .uvs-shop-btn:hover { background: linear-gradient(90deg, #f472b6, #a78bfa, #f87171); transform: scale(1.05); }
-        .uvs-login-btn { background: none; border: 2px solid #fff; color: #fff; border-radius: 16px; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s, color 0.2s; display: flex; align-items: center; gap: 8px; }
-        .uvs-login-btn:hover { background: #fff; color: #18181b; }
+        .uvs-login-btn,.uvs-shop-btn { background: none; border: 2px solid #fff; color: #fff; border-radius: 16px; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.2s, color 0.2s; display: flex; align-items: center; gap: 8px; }
+        .uvs-login-btn:hover ,.uvs-shop-btn:hover { background: #fff; color: #18181b; }
         .uvs-menu-btn { display: none; background: none; border: none; color: #fff; cursor: pointer; }
         .uvs-mobile-menu { display: flex; flex-direction: column; gap: 1rem; background: #18181b; padding: 1rem; }
         @media (max-width: 900px) {
           .uvs-nav-links { display: none; }
           .uvs-menu-btn { display: block; }
         }
-        .uvs-hero { position: relative; min-height: 80vh; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; }
+        .uvs-hero { position: relative; min-height: 80vh; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; background-repeat: no-repeat; margin-top: 60px; }
         .uvs-hero-overlay { position: absolute; inset: 0; z-index: 1; }
         .uvs-hero-content { position: relative; z-index: 2; text-align: center; margin: 0; padding: 0 4vw; box-sizing: border-box; }
         .uvs-hero-content h1 { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }

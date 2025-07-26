@@ -416,9 +416,14 @@ const Product = () => {
             ) : (
               <p style={styles.noReviews}>No reviews yet</p>
             )}
-            <button style={styles.reviewBtn} onClick={openReviewForm}>
-              Write a Review
-            </button>
+            <div style={styles.reviewButtons}>
+              <button style={styles.viewReviewsBtn} onClick={() => setShowReviewForm(true)}>
+                View Reviews ({product.reviewCount || 0})
+              </button>
+              <button style={styles.reviewBtn} onClick={openReviewForm}>
+                Write a Review
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -561,7 +566,9 @@ const styles = {
     background: '#fff',
     fontFamily: 'Montserrat, sans-serif',
     padding: '2rem 0',
-    width: '98vw',
+    paddingTop: '6rem',
+    width: '100%',
+    maxWidth: '100%',
     overflowX: 'hidden',
   },
   container: {
@@ -918,6 +925,23 @@ const styles = {
     fontStyle: 'italic',
     marginBottom: 16,
   },
+  reviewButtons: {
+    display: 'flex',
+    gap: 12,
+    marginTop: 16,
+  },
+  viewReviewsBtn: {
+    background: 'linear-gradient(135deg, #a78bfa, #f472b6)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    padding: '10px 20px',
+    fontSize: '0.9rem',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    flex: 1,
+  },
   reviewBtn: {
     background: 'linear-gradient(135deg, #667eea, #764ba2)',
     color: '#fff',
@@ -928,6 +952,7 @@ const styles = {
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
+    flex: 1,
   },
   skeletonPrice: {
     height: 16,

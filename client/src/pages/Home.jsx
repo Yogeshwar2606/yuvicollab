@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Search, Sofa, Smartphone, TreePine, ShoppingCart, Heart, Star, TrendingUp, Zap, Gift } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Search, Sofa, Smartphone, TreePine, ShoppingCart, Heart, Star, TrendingUp, Zap, Gift, Trash2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCartWithSync } from '../utils/cartUtils';
 import { addWishlistItem, removeWishlistItem } from '../../redux/wishlistSlice';
@@ -62,6 +62,9 @@ const Home = () => {
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [bannerParallax, setBannerParallax] = useState(0);
+  const parallaxTarget = useRef(0);
+  const parallaxCurrent = useRef(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -97,6 +100,35 @@ const Home = () => {
       setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
     }, 3000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Smooth Parallax scroll effect for banner
+  useEffect(() => {
+    let animationFrame;
+    let ticking = false;
+    const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
+
+    const animate = () => {
+      parallaxCurrent.current = lerp(parallaxCurrent.current, parallaxTarget.current, 0.08); // 0.08 = smoothness
+      setBannerParallax(parallaxCurrent.current);
+      if (Math.abs(parallaxCurrent.current - parallaxTarget.current) > 0.5) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    const handleScroll = () => {
+      parallaxTarget.current = window.scrollY * 0.3;
+      if (!ticking) {
+        animationFrame = requestAnimationFrame(animate);
+        ticking = true;
+        setTimeout(() => { ticking = false; }, 100); // allow new scrolls
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animationFrame);
+    };
   }, []);
 
   const filteredProducts = products.filter(
@@ -141,40 +173,40 @@ const Home = () => {
     addToCartWithSync(dispatch, user, product, 1);
   };
 
-  const handleUpdateQuantity = (productId, newQuantity) => {
+  const handleUpdateQuantity = (product, newQuantity) => {
     if (newQuantity <= 0) {
       // Remove from cart if quantity is 0 or less
-      const cartItem = cart.find(item => item.product._id === productId);
-      if (cartItem) {
-        // Import and use removeFromCartWithSync
-        import('../utils/cartUtils').then(({ removeFromCartWithSync }) => {
-          removeFromCartWithSync(dispatch, user, productId);
-        });
-      }
+      import('../utils/cartUtils').then(({ removeFromCartWithSync }) => {
+        removeFromCartWithSync(dispatch, user, product._id);
+      });
     } else {
-      // Update quantity
-      const cartItem = cart.find(item => item.product._id === productId);
-      if (cartItem) {
-        import('../utils/cartUtils').then(({ updateQuantityWithSync }) => {
-          updateQuantityWithSync(dispatch, user, productId, newQuantity);
-        });
-      }
+      import('../utils/cartUtils').then(({ updateQuantityWithSync }) => {
+        updateQuantityWithSync(dispatch, user, product, newQuantity, product.stock);
+      });
     }
   };
 
-  const handleRemoveFromCart = (productId) => {
+  const handleRemoveFromCart = (product) => {
     import('../utils/cartUtils').then(({ removeFromCartWithSync }) => {
-      removeFromCartWithSync(dispatch, user, productId);
+      removeFromCartWithSync(dispatch, user, product._id);
     });
   };
 
   const getCartItemQuantity = (productId) => {
-    const cartItem = cart.find(item => item.product._id === productId);
+    const cartItem = cart.find(item => {
+      if (!item.product) return false;
+      if (typeof item.product === 'object') return item.product._id === productId;
+      return item.product === productId;
+    });
     return cartItem ? cartItem.quantity : 0;
   };
 
   const isInCart = (productId) => {
-    return cart.some(item => item.product._id === productId);
+    return cart.some(item => {
+      if (!item.product) return false;
+      if (typeof item.product === 'object') return item.product._id === productId;
+      return item.product === productId;
+    });
   };
 
   const isInWishlist = (productId) => wishlist.some(item => item.product && (item.product._id === productId || item.product === productId));
@@ -254,7 +286,9 @@ const Home = () => {
               style={{ 
                 background: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${slide.image})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center'
+                backgroundPosition: `center ${bannerParallax}px`, // Parallax effect
+                willChange: 'background-position',
+                transition: 'background-position 0.3s cubic-bezier(0.4,0,0.2,1)'
               }}
               onClick={() => handleBannerClick(slide.category)}
             >
@@ -316,7 +350,7 @@ const Home = () => {
                     }}
                   >
                     <Heart 
-                      size={22} 
+                      size={28} 
                       fill={isInWishlist(product._id) ? '#ff6b6b' : 'none'} 
                       stroke={isInWishlist(product._id) ? '#ff6b6b' : '#666'}
                       strokeWidth={2}
@@ -339,36 +373,37 @@ const Home = () => {
                   
                   {/* Enhanced Cart Button */}
                   {isInCart(product._id) ? (
-                    <div className="cart-controls">
+                    <div className="cart-qty-control">
                       <button
-                        className="cart-btn minus"
-                        onClick={(e) => {
+                        className="qty-btn"
+                        onClick={e => {
                           e.stopPropagation();
-                          handleUpdateQuantity(product._id, getCartItemQuantity(product._id) - 1);
+                          handleUpdateQuantity(product, getCartItemQuantity(product._id) - 1);
                         }}
+                        disabled={getCartItemQuantity(product._id) <= 1}
                       >
-                        -
+                        –
                       </button>
-                      <span className="cart-quantity">{getCartItemQuantity(product._id)}</span>
+                      <span className="qty-count">{getCartItemQuantity(product._id)}</span>
                       <button
-                        className="cart-btn plus"
-                        onClick={(e) => {
+                        className="qty-btn"
+                        onClick={e => {
                           e.stopPropagation();
-                          handleUpdateQuantity(product._id, getCartItemQuantity(product._id) + 1);
+                          handleUpdateQuantity(product, getCartItemQuantity(product._id) + 1);
                         }}
                         disabled={getCartItemQuantity(product._id) >= product.stock}
                       >
                         +
                       </button>
                       <button
-                        className="cart-btn remove"
-                        onClick={(e) => {
+                        className="qty-btn trash"
+                        onClick={e => {
                           e.stopPropagation();
-                          handleRemoveFromCart(product._id);
+                          handleRemoveFromCart(product);
                         }}
                         title="Remove from cart"
                       >
-                        🗑️
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   ) : (
@@ -530,10 +565,10 @@ const Home = () => {
 
         /* Hero Banner */
         .hero-banner {
-          height: 70vh;
+          height: 60vh;
           position: relative;
           overflow: hidden;
-          margin-bottom: 4rem;
+          margin-bottom: 2rem;
         }
 
         .banner-container {
@@ -597,7 +632,7 @@ const Home = () => {
           }
 
           .search-section {
-            padding: 1.5rem;
+            padding: 1rem;
             min-height: 180px;
           }
 
@@ -742,11 +777,11 @@ const Home = () => {
 
         /* Search Section */
         .search-section {
-          padding: 2rem;
+          padding: 1rem;
           display: flex;
           justify-content: center;
           align-items: center;
-          min-height: 120px;
+          min-height:10vh;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
@@ -960,8 +995,7 @@ const Home = () => {
           position: absolute;
           top: 1rem;
           right: 1rem;
-          width: 44px;
-          height: 44px;
+          width: 44px;          height: 50px;
           border-radius: 50%;
           border: 2px solid rgba(255,255,255,0.8);
           background: rgba(255,255,255,0.95);
@@ -974,6 +1008,7 @@ const Home = () => {
           color: #666;
           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
           z-index: 10;
+          padding:4px;
         }
 
         .wishlist-btn:hover {
@@ -1230,6 +1265,56 @@ const Home = () => {
           .search-bar {
             margin-bottom: 0.5rem;
           }
+        }
+
+        .cart-qty-control {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 3px solid #ffd600;
+          border-radius: 2rem;
+          background: #fff;
+          padding: 0.2rem 1.2rem;
+          gap: 1.2rem;
+          font-size: 1.3rem;
+          font-weight: 700;
+          margin: 0.5rem 0 1.2rem 0;
+          box-shadow: 0 2px 8px #ffd60022;
+          min-width: 120px;
+        }
+        .qty-btn {
+          background: none;
+          border: none;
+          color: #222;
+          font-size: 1.6rem;
+          font-weight: 700;
+          cursor: pointer;
+          padding: 0 0.5rem;
+          border-radius: 50%;
+          transition: background 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 32px;
+          min-height: 32px;
+        }
+        .qty-btn:disabled {
+          color: #bbb;
+          cursor: not-allowed;
+        }
+        .qty-btn.trash {
+          color: #ff6b6b;
+          font-size: 1.2rem;
+          margin-left: 0.5rem;
+          padding: 0;
+        }
+        .qty-count {
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: #222;
+          min-width: 24px;
+          text-align: center;
+          letter-spacing: 1px;
         }
       `}</style>
     </div>
