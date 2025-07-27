@@ -213,7 +213,7 @@ const AddressBook = () => {
                 </p>
               </div>
               
-              <div style={styles.form}>
+              <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.formRow}>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>Full Name</label>
@@ -313,14 +313,13 @@ const AddressBook = () => {
                     Cancel
                   </button>
                   <button 
-                    type="button" 
+                    type="submit" 
                     style={styles.saveBtn}
-                    onClick={handleSubmit}
                   >
                     {editId ? 'Save Changes' : 'Add Address'}
                   </button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         )}
