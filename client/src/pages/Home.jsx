@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Search, Sofa, Smartphone, TreePine, ShoppingCart, Heart, Star, TrendingUp, Zap, Gift, Trash2 } from 'lucide-react';
+import { Search, Sofa, Smartphone, TreePine, ShoppingCart, Heart, Star, TrendingUp, Zap, Gift, Trash2, ShoppingBag } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCartWithSync } from '../utils/cartUtils';
 import { addWishlistItem, removeWishlistItem } from '../../redux/wishlistSlice';
@@ -221,6 +221,18 @@ const Home = () => {
     }
   };
 
+  const handleBuyNow = (e, product) => {
+    e.stopPropagation();
+    if (!user) {
+      alert('Please log in to continue with purchase');
+      return;
+    }
+    if (product.stock === 0) return;
+    
+    // Add to cart and redirect to checkout
+    addToCartWithSync(dispatch, user, product, 1);
+    navigate('/checkout');
+  };
 
 
   return (
@@ -371,54 +383,66 @@ const Home = () => {
                   
                   <div className="product-price">₹{Number(product.price).toLocaleString('en-IN')}</div>
                   
-                  {/* Enhanced Cart Button */}
-                  {isInCart(product._id) ? (
-                    <div className="cart-qty-control">
-                      <button
-                        className="qty-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleUpdateQuantity(product, getCartItemQuantity(product._id) - 1);
-                        }}
-                        disabled={getCartItemQuantity(product._id) <= 1}
-                      >
-                        –
-                      </button>
-                      <span className="qty-count">{getCartItemQuantity(product._id)}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleUpdateQuantity(product, getCartItemQuantity(product._id) + 1);
-                        }}
-                        disabled={getCartItemQuantity(product._id) >= product.stock}
-                      >
-                        +
-                      </button>
-                      <button
-                        className="qty-btn trash"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleRemoveFromCart(product);
-                        }}
-                        title="Remove from cart"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      className={`add-to-cart-btn ${product.stock === 0 ? 'disabled' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(product);
-                      }}
-                      disabled={product.stock === 0}
-                    >
-                      <ShoppingCart size={18} />
-                      <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
-                    </button>
-                  )}
+                  {/* Cart and Buy Now Buttons */}
+                  <div className="product-buttons">
+                    {isInCart(product._id) ? (
+                      <div className="cart-qty-control">
+                        <button
+                          className="qty-btn"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleUpdateQuantity(product, getCartItemQuantity(product._id) - 1);
+                          }}
+                          disabled={getCartItemQuantity(product._id) <= 1}
+                        >
+                          –
+                        </button>
+                        <span className="qty-count">{getCartItemQuantity(product._id)}</span>
+                        <button
+                          className="qty-btn"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleUpdateQuantity(product, getCartItemQuantity(product._id) + 1);
+                          }}
+                          disabled={getCartItemQuantity(product._id) >= product.stock}
+                        >
+                          +
+                        </button>
+                        <button
+                          className="qty-btn trash"
+                          onClick={e => {
+                            e.stopPropagation();
+                            handleRemoveFromCart(product);
+                          }}
+                          title="Remove from cart"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          className={`add-to-cart-btn ${product.stock === 0 ? 'disabled' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(product);
+                          }}
+                          disabled={product.stock === 0}
+                        >
+                          <ShoppingCart size={18} />
+                          <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                        </button>
+                        <button
+                          className={`buy-now-btn ${product.stock === 0 ? 'disabled' : ''}`}
+                          onClick={(e) => handleBuyNow(e, product)}
+                          disabled={product.stock === 0}
+                        >
+                          <ShoppingBag size={18} />
+                          <span>Buy Now</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -1075,12 +1099,19 @@ const Home = () => {
           margin-bottom: 1rem;
         }
 
+        .product-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          margin-top: 1rem;
+        }
+
         .add-to-cart-btn {
           width: 100%;
           background: linear-gradient(135deg, #667eea, #764ba2);
           color: white;
           border: none;
-          border-radius: 15px;
+          border-radius: 12px 12px 4px 4px;
           padding: 0.8rem 1rem;
           font-weight: 600;
           font-size: 1rem;
@@ -1092,15 +1123,35 @@ const Home = () => {
           transition: all 0.3s ease;
         }
 
-        .add-to-cart-btn:hover:not(.disabled) {
-          background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        .buy-now-btn {
+          width: 100%;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          border: none;
+          border-radius: 4px 4px 12px 12px;
+          padding: 0.8rem 1rem;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover:not(.disabled),
+        .buy-now-btn:hover:not(.disabled) {
           transform: translateY(-2px);
+          background: linear-gradient(135deg, #5a67d8, #6b46c1);
           box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .add-to-cart-btn.disabled {
+        .add-to-cart-btn.disabled,
+        .buy-now-btn.disabled {
           background: #ccc;
           cursor: not-allowed;
+          opacity: 0.6;
         }
 
 
