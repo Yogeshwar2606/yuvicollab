@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,8 +13,8 @@ import Checkout from './pages/Checkout';
 import OrderHistory from './pages/OrderHistory';
 import OrderDetails from './pages/OrderDetails';
 import { useSelector, useDispatch } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import { handleLogout } from './utils/auth';
-import ChatBot from './components/ChatBot';  // Updated import path
 
 function AlreadyLoggedIn({ children }) {
   const user = useSelector(state => state.user.user);
@@ -118,24 +118,21 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <Router>
-      <div className="app" style={{ position: 'relative', minHeight: '100vh' }}>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<AlreadyLoggedIn><Login /></AlreadyLoggedIn>} />
-          <Route path="/register" element={<AlreadyLoggedIn><Register /></AlreadyLoggedIn>} />
-          <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/product/:id" element={<ProtectedRoute><Product /></ProtectedRoute>} />
-          <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
-          <Route path="/address" element={<ProtectedRoute><AddressBook /></ProtectedRoute>} />
-          <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-          <Route path="/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
-          <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
-        </Routes>
-        <ChatBot />
-      </div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<AlreadyLoggedIn><Login /></AlreadyLoggedIn>} />
+        <Route path="/register" element={<AlreadyLoggedIn><Register /></AlreadyLoggedIn>} />
+        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/product/:id" element={<ProtectedRoute><Product /></ProtectedRoute>} />
+        <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+        <Route path="/address" element={<ProtectedRoute><AddressBook /></ProtectedRoute>} />
+        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+        <Route path="/orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+      </Routes>
     </Router>
   );
 }

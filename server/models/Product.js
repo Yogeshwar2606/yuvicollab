@@ -49,6 +49,22 @@ const productSchema = new mongoose.Schema({
     required: true,
     enum: ['Furniture', 'Electronics', 'Landscapes']
   },
+  subcategory: {
+    type: String,
+    enum: ['Plots', 'Houses', 'Villas', 'Flats', null],
+    default: null
+  },
+  features: [{
+    type: String
+  }],
+  location: {
+    type: String,
+    default: null
+  },
+  area: {
+    type: Number,  // in square feet
+    default: null
+  },
   images: [{
     type: String,
     required: true
